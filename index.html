@@ -17,7 +17,7 @@
       document.getElementById("output").innerText = "No auth code found in URL.";
     } else {
       // TEMP: Use manually retrieved token (replace this with dynamic exchange later)
-      const access_token = "YOUR_ACCESS_TOKEN_HERE"; // ← replace with your real token
+      const access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJmYWlvVm01ZUsyYnJJQzlIUnFHNGtaVVlzR284eTk4TUdwT3huNXRoNEl3IiwianRpIjoiZGYzNmQ2MDBkN2E4MmEyMTg0MWQzZTQxNzY3OWYxOTllNzVjNTZmZmRmYTI5N2Y2ZTcxNDIxODM5MmZhOGZkOTJlNTYxN2IwMTFmMjAzMzkiLCJpYXQiOjE3NTI2MjAzNjEuNDQ3Mjk2LCJuYmYiOjE3NTI2MjAzNjEuNDQ3Mjk4LCJleHAiOjE3NTI2MjM5NjEuNDM1Nzg5LCJzdWIiOiI5ZjYxZjkwZC1mZWJmLTRkYTYtOTU4Ni03NTUyNmRiNzg4NjQiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJhcGk6b2VtciIsImFwaTpmaGlyIiwidXNlci9QYXRpZW50LnJlYWQiLCJzaXRlOmRlZmF1bHQiXX0.h0Y3eL1U1XZe4NBdNBzBnlmIr_-tpodMlXLMw58FwIqPY8jt0G8cAS37oX-wV-TKkFApGhlHgCzqkCSsmx0v7BJDDkqkpplxrDbp5R99HWGmkQ0wtB5xJcw9RlZ1wi3I1tX8RgbKOWU3KYHDw93AOom2QwIt95HkYupvQV0Fk1PN2ykE1Iz6RXjv1N3N5XCN6A_u5MCFbfn00e0esg6WaBbSEOLQen9lqp48ux9PNHhNAf7YNAKoIVAbtG7Tlhm5Aq_hVGXiQPNRBqE6axTmdFZQjbluZsKcCrEStLuNzlslARjwbV0QjjK-zG5seRI6MhJveCklkcU4gWF9Z1wMEg; // 
 
       fetch("https://oemr.b691.us/apis/fhir/Patient", {
         headers: {
