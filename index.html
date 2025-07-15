@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SMART App Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
+  </head>
+  <body>
+    <h1>Hello from SMART on FHIR!</h1>
+    <div id="output">Loading patient...</div>
+
+    <script>
+      FHIR.oauth2.ready().then(client => {
+        client.request("Patient").then(patient => {
+          document.getElementById("output").innerHTML = `
+            <p><strong>Name:</strong> ${patient.name[0].given.join(" ")} ${patient.name[0].family}</p>
+            <p><strong>Gender:</strong> ${patient.gender}</p>
+            <p><strong>DOB:</strong> ${patient.birthDate}</p>
+          `;
+        });
+      });
+    </script>
+  </body>
+</html>
