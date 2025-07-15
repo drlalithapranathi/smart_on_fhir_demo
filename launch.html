@@ -6,12 +6,10 @@
 </head>
 <body>
   <script>
-    // Kick off SMART launch (inside OpenEMR EHR)
     FHIR.oauth2.authorize({
-      clientId: "my-smart-app",
-      scope: "launch patient/*.* openid fhirUser offline_access",
-      redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/",
-      iss: window.location.origin  // will be populated by EHR
+      clientId: "m5y0N231MX8zZBIJcUY5kwyEgKg_Xapk5p7yDzCCkv4",
+      scope: "launch launch/patient openid fhirUser offline_access api:oemr api:fhir api:port",
+      redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/index.html"
     });
   </script>
 </body>
