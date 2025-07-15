@@ -1,44 +1,56 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>SMART App Demo</title>
-    <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
-  </head>
-  <body>
-    <h1>Hello from SMART on FHIR!</h1>
-    <div id="output">Loading...</div>
+<head>
+  <title>SMART App Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
+</head>
+<body>
+  <h1>Hello from SMART on FHIR!</h1>
+  <div id="output">Loading...</div>
 
-    <script>
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get("code");
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    const state = urlParams.get("state");
 
-      if (!code) {
-        document.getElementById("output").innerText = "No auth code found in URL.";
-      } else {
-        // Temporary: hardcoded token (replace this in production)
-        const access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJmYWlvVm01ZUsyYnJJQzlIUnFHNGtaVVlzR284eTk4TUdwT3huNXRoNEl3IiwianRpIjoiZGYzNmQ2MDBkN2E4MmEyMTg0MWQzZTQxNzY3OWYxOTllNzVjNTZmZmRmYTI5N2Y2ZTcxNDIxODM5MmZhOGZkOTJlNTYxN2IwMTFmMjAzMzkiLCJpYXQiOjE3NTI2MjAzNjEuNDQ3Mjk2LCJuYmYiOjE3NTI2MjAzNjEuNDQ3Mjk4LCJleHAiOjE3NTI2MjM5NjEuNDM1Nzg5LCJzdWIiOiI5ZjYxZjkwZC1mZWJmLTRkYTYtOTU4Ni03NTUyNmRiNzg4NjQiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJhcGk6b2VtciIsImFwaTpmaGlyIiwidXNlci9QYXRpZW50LnJlYWQiLCJzaXRlOmRlZmF1bHQiXX0.h0Y3eL1U1XZe4NBdNBzBnlmIr_-tpodMlXLMw58FwIqPY8jt0G8cAS37oX-wV-TKkFApGhlHgCzqkCSsmx0v7BJDDkqkpplxrDbp5R99HWGmkQ0wtB5xJcw9RlZ1wi3I1tX8RgbKOWU3KYHDw93AOom2QwIt95HkYupvQV0Fk1PN2ykE1Iz6RXjv1N3N5XCN6A_u5MCFbfn00e0esg6WaBbSEOLQen9lqp48ux9PNHhNAf7YNAKoIVAbtG7Tlhm5Aq_hVGXiQPNRBqE6axTmdFZQjbluZsKcCrEStLuNzlslARjwbV0QjjK-zG5seRI6MhJveCklkcU4gWF9Z1wMEg";
+    if (!code) {
+      document.getElementById("output").innerText = "No auth code found in URL.";
+    } else {
+      // TEMP: Use manually retrieved token (replace this with dynamic exchange later)
+      const access_token = "YOUR_ACCESS_TOKEN_HERE"; // ← replace with your real token
 
-        fetch("https://oemr.b691.us/apis/fhir/Patient", {
-  headers: {
-    "Authorization": "Bearer " + access_token,
-    "Accept": "application/fhir+json"
-  }
-})
-        .then(res => res.json())
-        .then(data => {
-          const patient = data.entry?.[0]?.resource;
-          if (patient?.name?.length > 0) {
-            const name = `${patient.name[0].given.join(" ")} ${patient.name[0].family}`;
-            document.getElementById("output").innerText = `Patient: ${name}`;
+      fetch("https://oemr.b691.us/apis/fhir/Patient", {
+        headers: {
+          "Authorization": "Bearer " + access_token,
+          "Accept": "application/fhir+json"
+        }
+      })
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then(data => {
+        console.log("FHIR Response:", data);
+
+        if (data.entry && data.entry.length > 0) {
+          const patient = data.entry[0].resource;
+          const name = patient.name?.[0];
+          if (name) {
+            const fullName = `${name.given.join(" ")} ${name.family}`;
+            document.getElementById("output").innerText = `Patient: ${fullName}`;
           } else {
-            document.getElementById("output").innerText = "No patient data found.";
+            document.getElementById("output").innerText = "Patient has no name listed.";
           }
-        })
-        .catch(err => {
-          document.getElementById("output").innerText = "Error: " + err.message;
-        });
-      }
-    </script>
-  </body>
+        } else {
+          document.getElementById("output").innerText = "No patient entries found.";
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        document.getElementById("output").innerText = "Error: " + error.message;
+      });
+    }
+  </script>
+</body>
 </html>
 
