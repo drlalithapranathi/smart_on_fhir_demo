@@ -6,20 +6,38 @@
   </head>
   <body>
     <h1>Hello from SMART on FHIR!</h1>
-    <div id="output">Loading patient...</div>
+    <div id="output">Loading...</div>
 
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const code = urlParams.get('code');
-  const state = urlParams.get('state');
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
 
-  if (!code) {
-    document.getElementById("output").innerText = "No auth code found in URL.";
-  } else {
-    document.getElementById("output").innerText = "Authorization code: " + code;
+      if (!code) {
+        document.getElementById("output").innerText = "No auth code found in URL.";
+      } else {
+        // Temporary: hardcoded token (replace this in production)
+        const access_token = "PASTE_YOUR_ACCESS_TOKEN_HERE";
 
-    // You can now POST this code to get an access token (in JS or in Postman)
-  }
-</script>
+        fetch("https://oemr.b691.us/apis/fhir/Patient", {
+          headers: {
+            "Authorization": "Bearer " + access_token
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          const patient = data.entry?.[0]?.resource;
+          if (patient?.name?.length > 0) {
+            const name = `${patient.name[0].given.join(" ")} ${patient.name[0].family}`;
+            document.getElementById("output").innerText = `Patient: ${name}`;
+          } else {
+            document.getElementById("output").innerText = "No patient data found.";
+          }
+        })
+        .catch(err => {
+          document.getElementById("output").innerText = "Error: " + err.message;
+        });
+      }
+    </script>
   </body>
 </html>
+
