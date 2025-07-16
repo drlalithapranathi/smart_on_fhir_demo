@@ -14,9 +14,9 @@
     const launch = params.get("launch");
 
     if (!iss || !launch) {
-      document.getElementById("status").innerText = "Missing 'iss' or 'launch'. Must launch from EHR.";
+      document.getElementById("status").innerText = "Missing 'iss' or 'launch' parameter. Please launch from OpenEMR.";
     } else {
-      document.getElementById("status").innerText = "Redirecting to authorization...";
+      document.getElementById("status").innerText = "Redirecting to authorize...";
       FHIR.oauth2.authorize({
         clientId: "m5y0N231MX8zZBlJcUYSkwyEgKg_Xapk5p7yDzCCkv4",
         scope: "launch patient/*.* openid fhirUser offline_access",
