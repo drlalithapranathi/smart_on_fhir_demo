@@ -9,18 +9,24 @@
   <div id="output">Loading patient...</div>
 
   <script>
+    console.log("SMART App: Starting FHIR.oauth2.ready()");
     FHIR.oauth2.ready().then(client => {
+      console.log("SMART App: FHIR client ready", client);
+
       client.request("Patient").then(patient => {
+        console.log("SMART App: Patient resource", patient);
         const name = patient.name?.[0];
         const fullName = name ? `${name.given.join(" ")} ${name.family}` : "Unnamed";
         document.getElementById("output").innerText = "Patient: " + fullName;
       }).catch(err => {
+        console.error("SMART App: Error loading patient", err);
         document.getElementById("output").innerText = "Error loading patient: " + err.message;
       });
+
     }).catch(err => {
+      console.error("SMART App: Auth error", err);
       document.getElementById("output").innerText = "Auth error: " + err.message;
     });
   </script>
 </body>
 </html>
-
