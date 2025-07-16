@@ -1,31 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SMART App</title>
+  <title>SMART App Debug</title>
   <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
 </head>
 <body>
-  <h1>SMART App Loaded</h1>
-  <div id="output">Loading patient...</div>
-
+  <h1>SMART App Debug</h1>
+  <div id="output">Checking authentication...</div>
+  <div id="debug"></div>
   <script>
+    // Show URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const debugInfo = [];
+    for (const [key, value] of params) {
+      debugInfo.push(`${key}: ${value}`);
+    }
+    
+    document.getElementById("debug").innerHTML = `
+      <h3>URL Parameters:</h3>
+      <pre>${debugInfo.join('\n')}</pre>
+      <h3>Full URL:</h3>
+      <pre>${window.location.href}</pre>
+    `;
+
     console.log("SMART App: Starting FHIR.oauth2.ready()");
     FHIR.oauth2.ready().then(client => {
       console.log("SMART App: FHIR client ready", client);
-
-      client.request("Patient").then(patient => {
-        console.log("SMART App: Patient resource", patient);
-        const name = patient.name?.[0];
-        const fullName = name ? `${name.given.join(" ")} ${name.family}` : "Unnamed";
-        document.getElementById("output").innerText = "Patient: " + fullName;
-      }).catch(err => {
-        console.error("SMART App: Error loading patient", err);
-        document.getElementById("output").innerText = "Error loading patient: " + err.message;
-      });
-
+      document.getElementById("output").innerHTML = `
+        <h2>✅ Authentication Successful!</h2>
+        <p>Patient ID: ${client.patient?.id || 'Not available'}</p>
+        <p>User: ${client.user?.id || 'Not available'}</p>
+      `;
     }).catch(err => {
       console.error("SMART App: Auth error", err);
-      document.getElementById("output").innerText = "Auth error: " + err.message;
+      document.getElementById("output").innerHTML = `
+        <h2>❌ Auth Error</h2>
+        <p>${err.message}</p>
+        <pre>${JSON.stringify(err, null, 2)}</pre>
+      `;
     });
   </script>
 </body>
