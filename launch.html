@@ -1,36 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Launching SMART App</title>
-  <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
+  <title>SMART App Launcher</title>
 </head>
 <body>
-  <h1>Launching SMART App...</h1>
-  <div id="status">Preparing to launch...</div>
-  <script>
-    try {
-      const launchParams = new URLSearchParams(window.location.search);
-      const iss = launchParams.get("iss");
-      const launch = launchParams.get("launch");
-      const clientId = localStorage.getItem("client_id") || "m5y0N231MX8zZBIJcUYSkwyEgKg_Xapk5p7yDzCCkv4";
+  <h2>SMART App Launch</h2>
+  <div id="status">Loading...</div>
 
-      if (!iss || !launch) {
-        document.getElementById("status").innerText =
-          "Missing 'iss' or 'launch' parameter. Launch must be from OpenEMR.";
+  <div id="registerUI" style="display:none;">
+    <p>This app is not registered. Please enter the client ID:</p>
+    <input type="text" id="clientIdInput" placeholder="Enter client ID" />
+    <button onclick="startLaunch()">Save</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const iss = params.get("iss");
+    const launch = params.get("launch");
+
+    if (!iss || !launch) {
+      document.getElementById("status").innerText = "Missing launch parameters.";
+    } else {
+      const savedClientId = sessionStorage.getItem("smart_client_id");
+      if (!savedClientId) {
+        document.getElementById("status").innerText = "";
+        document.getElementById("registerUI").style.display = "block";
       } else {
-        document.getElementById("status").innerText = "Launching...";
-        FHIR.oauth2.authorize({
-          clientId: clientId,
-          scope: "launch patient/*.* openid fhirUser offline_access",
-          redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/index.html",
-          iss: iss,
-          launch: launch
-        });
+        launchApp(savedClientId);
       }
-    } catch (e) {
-      document.getElementById("status").innerText = "Launch error: " + e.message;
+    }
+
+    function startLaunch() {
+      const clientId = document.getElementById("clientIdInput").value;
+      sessionStorage.setItem("smart_client_id", clientId);
+      launchApp(clientId);
+    }
+
+    function launchApp(clientId) {
+      document.getElementById("status").innerText = "Launching SMART App...";
+      FHIR.oauth2.authorize({
+        clientId,
+        scope: "launch patient/*.* openid fhirUser offline_access",
+        redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/index.html",
+        iss,
+        launch
+      });
     }
   </script>
 </body>
 </html>
+
 
