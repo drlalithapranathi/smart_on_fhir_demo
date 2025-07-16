@@ -7,17 +7,29 @@
 <body>
   <h1>Launching SMART App...</h1>
   <div id="status">Preparing to launch...</div>
+  <div id="debug"></div>
   <script>
     const params = new URLSearchParams(window.location.search);
     const iss = params.get("iss");
     const launch = params.get("launch");
+    
+    // Debug info
+    document.getElementById("debug").innerHTML = `
+      <h3>Debug Info:</h3>
+      <p>ISS: ${iss}</p>
+      <p>Launch: ${launch}</p>
+      <p>Full URL: ${window.location.href}</p>
+    `;
+    
     if (!iss || !launch) {
       document.getElementById("status").innerText = "Missing 'iss' or 'launch' parameter. Please launch from OpenEMR.";
     } else {
       document.getElementById("status").innerText = "Redirecting to authorize...";
+      
+      // Try with minimal, standard scopes only
       FHIR.oauth2.authorize({
         clientId: "m5y0N231MX8zZBlJcUYSkwyEgKg_Xapk5p7yDzCCkv4",
-        scope: "launch launch/patient patient.read openid fhirUser online_access api:oemr api:fhir",
+        scope: "launch openid fhirUser",
         redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/index.html",
         iss: iss,
         launch: launch
