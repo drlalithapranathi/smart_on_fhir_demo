@@ -1,53 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Launch SMART App</title>
-  <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
-</head>
-<body>
-  <h2>SMART App Launch</h2>
-  <div id="status">Preparing launch...</div>
-
-  <div id="clientIdInput">
-    <p>Enter your Client ID:</p>
-    <input id="clientId" type="text" placeholder="Paste client ID here" />
-    <button onclick="launchApp()">Launch App</button>
-  </div>
-
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const iss = params.get("iss");
-    const launch = params.get("launch");
-
-    function launchApp() {
-      const clientId = document.getElementById("clientId").value.trim();
-      if (!clientId) {
-        document.getElementById("status").innerText = "Please enter a client ID.";
-        return;
-      }
-
-      if (!iss || !launch) {
-        document.getElementById("status").innerText = "Missing 'iss' or 'launch' parameters. Launch must be from OpenEMR.";
-        return;
-      }
-
-      document.getElementById("status").innerText = "Launching SMART App...";
-
-      FHIR.oauth2.authorize({
-        clientId,
-        scope: "launch patient/*.* openid fhirUser offline_access",
-        redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/index.html",
-        iss,
-        launch
-      });
-    }
-
-    if (!iss || !launch) {
-      document.getElementById("status").innerText = "Missing 'iss' or 'launch' parameters. Launch must be from OpenEMR.";
-    } else {
-      document.getElementById("status").innerText = "Enter client ID to launch.";
-    }
-  </script>
-</body>
-</html>
+FHIR.oauth2.authorize({
+  clientId: "m5y0N231MX8zZBlJcUYSkwyEgKg_Xapk5p7yDzCCkv4", //  Hardcoded
+  scope: "launch patient/*.* openid fhirUser offline_access",
+  redirectUri: "https://your-app-url/index.html", // match what was registered in OpenEMR
+  iss,
+  launch
+});
 
