@@ -20,7 +20,7 @@
           const fullName = name ? `${name.given?.join(" ")} ${name.family}` : "Unnamed";
           
           document.getElementById("output").innerHTML = `
-            <h2>✅ Successfully Connected!</h2>
+            <h2> Successfully Connected!</h2>
             <h3>Patient Information:</h3>
             <p><strong>Name:</strong> ${fullName}</p>
             <p><strong>ID:</strong> ${patient.id}</p>
@@ -30,14 +30,14 @@
         }).catch(err => {
           console.error("Error loading patient:", err);
           document.getElementById("output").innerHTML = `
-            <h2>✅ Connected, but patient data unavailable</h2>
+            <h2> Connected, but patient data unavailable</h2>
             <p>Error: ${err.message}</p>
             <p>User: ${client.user?.resourceType || 'Unknown'}</p>
           `;
         });
       } else {
         document.getElementById("output").innerHTML = `
-          <h2>✅ Successfully Connected!</h2>
+          <h2> Successfully Connected!</h2>
           <p>No patient context available</p>
           <p>User: ${client.user?.resourceType || 'Unknown'}</p>
           <p>FHIR Server: ${client.state.serverUrl}</p>
