@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deregister SMART App</title>
+</head>
+<body>
+  <input type="text" id="clientId" placeholder="Enter new clientId" />
+  <button onclick="save()">Deregister</button>
+  <a href="launch.html">Restart launch</a>
+
+  <script>
+    function save() {
+      const clientId = document.getElementById('clientId').value;
+      sessionStorage.setItem('clientId', clientId); // or localStorage
+      alert("Saved. Click 'Restart launch' to test fresh.");
+    }
+  </script>
+</body>
+</html>
