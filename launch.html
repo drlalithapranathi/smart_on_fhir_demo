@@ -1,40 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SMART App Launcher</title>
+  <title>Launch SMART App</title>
+  <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
 </head>
 <body>
   <h2>SMART App Launch</h2>
-  <div id="status">Loading...</div>
+  <div id="status">Preparing launch...</div>
 
-  <div id="registerUI" style="display:none;">
-    <p>This app is not registered. Please enter the client ID:</p>
-    <input type="text" id="clientIdInput" placeholder="Enter client ID" />
-    <button onclick="startLaunch()">Save</button>
+  <div id="clientIdInput" style="display: none;">
+    <p>Enter your Client ID:</p>
+    <input id="clientId" type="text" />
+    <button onclick="saveClientId()">Save & Launch</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
+  <button onclick="deregister()">Deregister</button>
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const iss = params.get("iss");
     const launch = params.get("launch");
 
-    if (!iss || !launch) {
-      document.getElementById("status").innerText = "Missing launch parameters.";
-    } else {
-      const savedClientId = sessionStorage.getItem("smart_client_id");
-      if (!savedClientId) {
-        document.getElementById("status").innerText = "";
-        document.getElementById("registerUI").style.display = "block";
-      } else {
-        launchApp(savedClientId);
-      }
+    const clientId = sessionStorage.getItem("smart_client_id");
+
+    function saveClientId() {
+      const enteredId = document.getElementById("clientId").value;
+      sessionStorage.setItem("smart_client_id", enteredId);
+      launchApp(enteredId);
     }
 
-    function startLaunch() {
-      const clientId = document.getElementById("clientIdInput").value;
-      sessionStorage.setItem("smart_client_id", clientId);
-      launchApp(clientId);
+    function deregister() {
+      sessionStorage.removeItem("smart_client_id");
+      window.location.reload();
     }
 
     function launchApp(clientId) {
@@ -47,8 +44,17 @@
         launch
       });
     }
+
+    // Flow Control
+    if (!iss || !launch) {
+      document.getElementById("status").innerText = "Missing 'iss' or 'launch' param. Launch from OpenEMR.";
+    } else if (!clientId) {
+      document.getElementById("clientIdInput").style.display = "block";
+      document.getElementById("status").innerText = "Client ID required to launch.";
+    } else {
+      launchApp(clientId);
+    }
   </script>
 </body>
 </html>
-
 
