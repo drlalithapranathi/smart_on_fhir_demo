@@ -8,34 +8,31 @@
   <h2>SMART App Launch</h2>
   <div id="status">Preparing launch...</div>
 
-  <div id="clientIdInput" style="display: none;">
+  <div id="clientIdInput">
     <p>Enter your Client ID:</p>
-    <input id="clientId" type="text" />
-    <button onclick="saveClientId()">Save & Launch</button>
+    <input id="clientId" type="text" placeholder="Paste client ID here" />
+    <button onclick="launchApp()">Launch App</button>
   </div>
-
-  <button onclick="deregister()">Deregister</button>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const iss = params.get("iss");
     const launch = params.get("launch");
 
-    const clientId = sessionStorage.getItem("smart_client_id");
+    function launchApp() {
+      const clientId = document.getElementById("clientId").value.trim();
+      if (!clientId) {
+        document.getElementById("status").innerText = "Please enter a client ID.";
+        return;
+      }
 
-    function saveClientId() {
-      const enteredId = document.getElementById("clientId").value;
-      sessionStorage.setItem("smart_client_id", enteredId);
-      launchApp(enteredId);
-    }
+      if (!iss || !launch) {
+        document.getElementById("status").innerText = "Missing 'iss' or 'launch' parameters. Launch must be from OpenEMR.";
+        return;
+      }
 
-    function deregister() {
-      sessionStorage.removeItem("smart_client_id");
-      window.location.reload();
-    }
-
-    function launchApp(clientId) {
       document.getElementById("status").innerText = "Launching SMART App...";
+
       FHIR.oauth2.authorize({
         clientId,
         scope: "launch patient/*.* openid fhirUser offline_access",
@@ -45,14 +42,10 @@
       });
     }
 
-    // Flow Control
     if (!iss || !launch) {
-      document.getElementById("status").innerText = "Missing 'iss' or 'launch' param. Launch from OpenEMR.";
-    } else if (!clientId) {
-      document.getElementById("clientIdInput").style.display = "block";
-      document.getElementById("status").innerText = "Client ID required to launch.";
+      document.getElementById("status").innerText = "Missing 'iss' or 'launch' parameters. Launch must be from OpenEMR.";
     } else {
-      launchApp(clientId);
+      document.getElementById("status").innerText = "Enter client ID to launch.";
     }
   </script>
 </body>
