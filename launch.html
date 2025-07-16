@@ -18,7 +18,6 @@
       <h3>Debug Info:</h3>
       <p>ISS: ${iss}</p>
       <p>Launch: ${launch}</p>
-      <p>Full URL: ${window.location.href}</p>
     `;
     
     if (!iss || !launch) {
@@ -26,10 +25,9 @@
     } else {
       document.getElementById("status").innerText = "Redirecting to authorize...";
       
-      // Try with minimal, standard scopes only
       FHIR.oauth2.authorize({
         clientId: "m5y0N231MX8zZBlJcUYSkwyEgKg_Xapk5p7yDzCCkv4",
-        scope: "launch openid fhirUser",
+        scope: "openid fhirUser online_access offline_access launch launch/patient api:oemr api:fhir api:port",
         redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/index.html",
         iss: iss,
         launch: launch
