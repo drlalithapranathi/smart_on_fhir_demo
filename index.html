@@ -11,12 +11,38 @@
     console.log("SMART App: Starting FHIR.oauth2.ready()");
     FHIR.oauth2.ready().then(client => {
       console.log("SMART App: FHIR client ready", client);
-      document.getElementById("output").innerHTML = `
-        <h2>✅ Successfully Connected!</h2>
-        <p>User: ${client.user?.resourceType || 'Unknown'}</p>
-        <p>User ID: ${client.user?.id || 'Not available'}</p>
-        <p>FHIR Server: ${client.state.serverUrl}</p>
-      `;
+      
+      // Since we have launch/patient scope, get the patient from context
+      if (client.patient && client.patient.id) {
+        client.request(`Patient/${client.patient.id}`).then(patient => {
+          console.log("Patient data:", patient);
+          const name = patient.name?.[0];
+          const fullName = name ? `${name.given?.join(" ")} ${name.family}` : "Unnamed";
+          
+          document.getElementById("output").innerHTML = `
+            <h2>✅ Successfully Connected!</h2>
+            <h3>Patient Information:</h3>
+            <p><strong>Name:</strong> ${fullName}</p>
+            <p><strong>ID:</strong> ${patient.id}</p>
+            <p><strong>Birth Date:</strong> ${patient.birthDate || 'Not provided'}</p>
+            <p><strong>Gender:</strong> ${patient.gender || 'Not provided'}</p>
+          `;
+        }).catch(err => {
+          console.error("Error loading patient:", err);
+          document.getElementById("output").innerHTML = `
+            <h2>✅ Connected, but patient data unavailable</h2>
+            <p>Error: ${err.message}</p>
+            <p>User: ${client.user?.resourceType || 'Unknown'}</p>
+          `;
+        });
+      } else {
+        document.getElementById("output").innerHTML = `
+          <h2>✅ Successfully Connected!</h2>
+          <p>No patient context available</p>
+          <p>User: ${client.user?.resourceType || 'Unknown'}</p>
+          <p>FHIR Server: ${client.state.serverUrl}</p>
+        `;
+      }
     }).catch(err => {
       console.error("SMART App: Auth error", err);
       document.getElementById("output").innerText = "Auth error: " + err.message;
