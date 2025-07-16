@@ -19,10 +19,10 @@
       document.getElementById("status").innerText = "Redirecting to authorize...";
       FHIR.oauth2.authorize({
         clientId: "m5y0N231MX8zZBlJcUYSkwyEgKg_Xapk5p7yDzCCkv4",
-        scope: "launch patient/*.* openid fhirUser offline_access",
+        scope: "launch/patient patient.read openid fhirUser",
         redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/index.html",
-        iss,
-        launch
+        iss: iss,
+        launch: launch
       });
     }
   </script>
