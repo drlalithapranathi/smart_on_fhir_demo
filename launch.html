@@ -5,19 +5,30 @@
   <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.min.js"></script>
 </head>
 <body>
+  <h1>Launching SMART App...</h1>
+  <div id="status">Preparing to launch...</div>
   <script>
-    // Extract launch parameters from OpenEMR SMART button
-    const params = new URLSearchParams(window.location.search);
-    const iss = params.get("iss");
-    const launch = params.get("launch");
+    try {
+      const launchParams = new URLSearchParams(window.location.search);
+      const iss = launchParams.get("iss");
+      const launch = launchParams.get("launch");
 
-    FHIR.oauth2.authorize({
-      clientId: "m5y0N231MX8zZBIJcUYSkwyEgKg_Xapk5p7yDzCCkv4",
-      scope: "launch launch/patient patient/*.* openid fhirUser offline_access",
-      redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/index.html",
-      iss,
-      launch
-    });
+      if (!iss || !launch) {
+        document.getElementById("status").innerText =
+          "Missing 'iss' or 'launch' parameter. Launch must be from OpenEMR.";
+      } else {
+        document.getElementById("status").innerText = "Launching...";
+        FHIR.oauth2.authorize({
+          clientId: "m5y0N231MX8zZBIJcUYSkwyEgKg_Xapk5p7yDzCCkv4",
+          scope: "launch patient/*.* openid fhirUser offline_access",
+          redirectUri: "https://drlalithapranathi.github.io/smart_on_fhir_demo/index.html",
+          iss: iss,
+          launch: launch
+        });
+      }
+    } catch (e) {
+      document.getElementById("status").innerText = "Launch error: " + e.message;
+    }
   </script>
 </body>
 </html>
